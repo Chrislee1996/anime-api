@@ -41,7 +41,7 @@ router.get('/examples', requireToken, (req, res, next) => {
 		.then((examples) => res.status(200).json({ examples: examples }))
 		// if an error occurs, pass it to the handler
 		.catch(next)
-})
+})	
 
 // SHOW
 // GET /examples/5a7db6c74d55bc51bdf39793

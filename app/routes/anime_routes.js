@@ -44,6 +44,22 @@ router.get('/animes', requireToken, (req, res, next) => {
 })	
 
 
+// CREATE
+// POST /animes
+router.post('/animes', requireToken, (req, res, next) => {
+	// set owner of new example to be current user
+	req.body.anime.owner = req.user.id
+
+	Anime.create(req.body.anime)
+		// respond to succesful `create` with status 201 and JSON of new "example"
+		.then((anime) => {
+			res.status(201).json({ anime: anime.toObject() })
+		})
+		// if an error occurs, pass it off to our error handler
+		// the error handler needs the error message and the `res` object so that it
+		// can send an error message back to the client
+		.catch(next)
+})
 
 
 module.exports = router
