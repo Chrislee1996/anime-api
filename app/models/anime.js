@@ -33,7 +33,21 @@ const animeSchema = new mongoose.Schema(
     },
     {
 		timestamps: true,
+        toObject:{virtuals:true},
+        toJSON:{virtuals:true}
 	}
 )
+
+animeSchema.virtual('titleAndYear').get(function(){
+    return `${this.title} (${this.yearOfRelease})`
+})
+
+animeSchema.virtual('status').get(function(){
+    if (this.onGoing == true) {
+        return "On-going"
+    } else if (this.onGoing == false) {
+        return "Finished Airing"
+    }
+})
 
 module.exports = mongoose.model('Anime', animeSchema)
