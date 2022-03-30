@@ -43,6 +43,15 @@ router.get('/animes', (req, res, next) => {
 		.catch(next)
 })	
 
+//SHOW
+//GET /animes/6244858502aa548fd4fa911e
+router.get('/animes/:id', (req,res,next) => {
+	Anime.findById(req.params.id)
+	.populate('owner')
+		.then(handle404)
+		.then(anime => res.status(200).json({ anime: anime.toObject() }))
+		.catch(next)
+})
 
 // CREATE
 // POST /animes
