@@ -46,10 +46,13 @@ router.get('/animes', (req, res, next) => {
 //SHOW
 //GET /animes/6244858502aa548fd4fa911e
 router.get('/animes/:id', (req,res,next) => {
+    //we'll get the id from the req.params.d -> :id
 	Anime.findById(req.params.id)
 	.populate('owner')
 		.then(handle404)
+        //if successful, respond with an object as json
 		.then(anime => res.status(200).json({ anime: anime.toObject() }))
+		//error handler
 		.catch(next)
 })
 
@@ -70,5 +73,24 @@ router.post('/animes', requireToken, (req, res, next) => {
 		.catch(next)
 })
 
+
+//UPDATE
+//PATCH /animes/6244858502aa548fd4fa911e
+router.patch('/animes/:id', requireToken, removeBlanks, (req,res,next) => {
+    //if the client attempts to change owner of the anime, we can disallow that
+	delete req.body.owner
+	//find anime by Id
+	Anime.findById(req.params.id)
+		.then(handle404)
+    //require ownership and update the anime
+		.then(anime => {
+			requireOwnership(req, anime)
+			return anime.updateOne(req.body.anime)
+		})
+		// if that succeeded, return 204 and no JSON
+		.then(() => res.sendStatus(204))
+		//error handler
+		.catch(next)
+})
 
 module.exports = router
