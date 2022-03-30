@@ -93,4 +93,24 @@ router.patch('/animes/:id', requireToken, removeBlanks, (req,res,next) => {
 		.catch(next)
 })
 
+//REMOVE
+//Delete /animes/6244858502aa548fd4fa911e
+router.delete('/animes/:id', requireToken, (req,res,next)=> {
+	//find anime by id
+	Anime.findById(req.params.id)
+	//handle 404 if any
+		.then(handle404)
+	//need require ownership so only owner/user of it can delete the anime
+		.then(anime=> {
+			// requireOwnership needs two arguments
+            // these are the req, and the document itself
+			requireOwnership(req, anime)
+            // delete if the middleware doesnt throw an error
+			anime.deleteOne()
+		})
+    // send back a 204 no content status
+		.then(()=> res.sendStatus(204))
+		.catch(next)
+})
+
 module.exports = router
