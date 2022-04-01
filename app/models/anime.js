@@ -20,11 +20,13 @@ const animeSchema = new mongoose.Schema(
         },
         yearOfRelease:{
             type:Number,
+            min:1900,
+            max:3000,
             required:true
         },
         imageOfAnime:{
             type:String,
-            required:true
+            required:true,
         },
         owner: {
 			type: mongoose.Schema.Types.ObjectId,
@@ -42,12 +44,5 @@ animeSchema.virtual('titleAndYear').get(function(){
     return `${this.title} (${this.yearOfRelease})`
 })
 
-animeSchema.virtual('status').get(function(){
-    if (this.onGoing == true) {
-        return "On-going"
-    } else if (this.onGoing == false) {
-        return "Finished Airing"
-    }
-})
 
 module.exports = mongoose.model('Anime', animeSchema)
